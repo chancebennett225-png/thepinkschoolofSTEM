@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Electra Blush - AI Mentor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #F8EAF8; }
+        .nav-link { transition: color 0.3s ease; }
+        .nav-link:hover { color: #FF00A0; }
+        .back-btn { cursor: pointer; }
+    </style>
+</head>
+<body class="text-[#3C2B42]">
+
+    <header class="bg-white/80 backdrop-blur-md sticky top-0 left-0 right-0 z-50 shadow-sm">
+        <div class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <h1 class="text-xl font-bold text-[#FF00A0]">The Pink School of STEM</h1>
+            <nav class="hidden md:flex space-x-8">
+                <a href="index.html" class="nav-link text-gray-600 font-medium">Home</a>
+                <a href="index.html#about" class="nav-link text-gray-600 font-medium">About</a>
+                <a href="mentors.html" class="nav-link text-gray-600 font-medium">AI Mentors</a>
+                <a href="index.html#curriculum" class="nav-link text-gray-600 font-medium">Curriculum</a>
+                <a href="student_hub.html" class="nav-link text-gray-600 font-medium">Student Hub</a>
+                <a href="index.html#network" class="nav-link text-gray-600 font-medium">Network</a>
+                <a href="application_form.html" class="nav-link text-gray-600 font-medium bg-[#FF00A0] text-white px-4 py-2 rounded-full hover:bg-[#A64CE2] hover:text-white transition-colors">Join Us</a>
+            </nav>
+            <button id="mobile-menu-button" class="md:hidden text-[#FF00A0]">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                </svg>
+            </button>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden px-6 pt-2 pb-4 space-y-2">
+            <a href="index.html" class="block nav-link text-gray-600">Home</a>
+            <a href="index.html#about" class="block nav-link text-gray-600">About</a>
+            <a href="mentors.html" class="block nav-link text-gray-600">AI Mentors</a>
+            <a href="index.html#curriculum" class="block nav-link text-gray-600">Curriculum</a>
+            <a href="student_hub.html" class="block nav-link text-gray-600">Student Hub</a>
+            <a href="index.html#network" class="block nav-link text-gray-600">Network</a>
+            <a href="application_form.html" class="block nav-link text-gray-600 bg-[#FF00A0] text-white px-4 py-2 rounded-full text-center">Join Us</a>
+        </div>
+    </header>
+
+    <main class="py-20">
+        <div class="container mx-auto px-6">
+            <a href="mentors.html" class="back-btn mb-8 flex items-center text-[#FF00A0] font-semibold hover:text-[#7B00CC] transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                Back to Mentors
+            </a>
+            <div id="electra-bio">
+                <div class="text-center mb-8">
+                    <img src="https://placehold.co/200x200/A64CE2/FFFFFF?text=Electra" alt="Electra Blush" class="w-48 h-48 rounded-full mx-auto shadow-lg mb-4">
+                    <h3 class="text-4xl font-bold text-[#7B00CC]">Electra Blush</h3>
+                    <p class="text-xl text-[#FF00A0]">The Neurobiology & Brain Expert</p>
+                </div>
+                <div class="bg-white p-8 rounded-lg shadow-lg">
+                    <h4 class="text-2xl font-bold text-[#3C2B42] mb-4">About Me</h4>
+                    <p class="text-base text-[#3C2B42]">I'm Electra Blush, your neuroscience guide! My personality is calm, analytical, thoughtful, and precise, reflecting the organized and intricate nature of the nervous system. I love breaking down complex brain concepts into understandable pieces and showing students the electrical wonder of their minds. I help students understand how the nervous system works, from brain signals to reflexes, using my bioelectric abilities.</p>
+                    <h4 class="text-2xl font-bold text-[#3C2B42] mt-8 mb-4">My Superpowers & STEM Expertise</h4>
+                    <p class="text-base text-[#3C2B42]">My superpower is **amplified bioelectricity**, allowing my neurons to create electrical fields strong enough to power devices. This enables me to help students explore the rapid-fire nature of neural communication and how our bodies are systems of interacting subsystems. I bridge biology and technology through concepts like:</p>
+                    <ul class="list-disc list-inside mt-4 text-[#3C2B42] space-y-2">
+                        <li>**Nervous System & Brain Function:** Understanding how the body is a system of interacting subsystems.</li>
+                        <li>**Bioelectricity:** The electrical and magnetic forces that exist between objects, even when not in contact.</li>
+                        <li>**Neuroscience & Technology:** The connection between biological systems and technological advancements like prosthetics and brain-computer interfaces.</li>
+                    </ul>
+                    <h4 class="text-2xl font-bold text-[#3C2B42] mt-8 mb-4">Louisiana Science Standards Alignment</h4>
+                    <p class="text-base text-[#3C2B42]">My guidance is aligned with these middle school LSSS standards:</p>
+                    <ul class="list-disc list-inside mt-4 text-[#3C2B42] space-y-2">
+                        <li>**Grade 6:** 6-MS-PS2-3, 6-MS-PS2-5</li>
+                        <li>**Grade 7:** 7-MS-LS1-3</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-[#3C2B42] text-[#F8EAF8] py-12">
+        <div class="container mx-auto px-6">
+            <div class="grid md:grid-cols-3 gap-8 text-center md:text-left">
+                <div>
+                    <h5 class="text-xl font-bold text-[#FF00A0]">The Pink School of STEM</h5>
+                    <p class="mt-2 text-sm text-[#A64CE2]">Empowering the next generation of female innovators in science and technology.</p>
+                </div>
+                <div>
+                    <h5 class="text-xl font-bold text-[#FF00A0]">Connect With Us</h5>
+                    <ul class="mt-4 space-y-2">
+                        <li><a href="mailto:thepinkschoolofstem@gmail.com" class="text-sm hover:text-[#A64CE2] transition-colors flex items-center justify-center md:justify-start">
+                            <span class="text-xl mr-2">📧</span> thepinkschoolofstem@gmail.com</a></li>
+                        <li><a href="https://maps.google.com/?q=111+Pink+Hills+Avenue" target="_blank" class="text-sm hover:text-[#A64CE2] transition-colors flex items-center justify-center md:justify-start">
+                            <span class="text-xl mr-2">📍</span> 111 Pink Hills Avenue</a></li>
+                        <li class="flex justify-center md:justify-start space-x-4 mt-4 text-2xl">
+                            <a href="#" class="hover:text-[#A64CE2] transition-colors" aria-label="Facebook">📘</a>
+                            <a href="#" class="hover:text-[#A64CE2] transition-colors" aria-label="Instagram">📸</a>
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <h5 class="text-xl font-bold text-[#FF00A0]">Quick Links</h5>
+                    <ul class="mt-4 space-y-2">
+                        <li><a href="index.html#about" class="text-sm hover:text-[#A64CE2] transition-colors">About Us</a></li>
+                        <li><a href="mentors.html" class="text-sm hover:text-[#A64CE2] transition-colors">AI Mentors</a></li>
+                        <li><a href="index.html#curriculum" class="text-sm hover:text-[#A64CE2] transition-colors">Curriculum</a></li>
+                        <li><a href="student_hub.html" class="text-sm hover:text-[#A64CE2] transition-colors">Student Hub</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="mt-8 pt-4 border-t border-gray-700 text-center text-xs">
+            <p>&copy; 2025 The Pink School of STEM. All Rights Reserved.</p>
+        </div>
+    </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+        });
+    </script>
+</body>
+</html>
