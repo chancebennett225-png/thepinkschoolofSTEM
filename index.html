@@ -358,45 +358,18 @@
         document.addEventListener('DOMContentLoaded', function () {
             const mobileMenuButton = document.getElementById('mobile-menu-button');
             const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
             const carouselSlide = document.getElementById('carousel-slide');
             const carouselImages = document.querySelectorAll('#carousel-slide img');
-            const tabs = document.querySelectorAll('.curriculum-tab');
-            const tabContents = document.querySelectorAll('.tab-content');
-            
             let currentIndex = 0;
-            const images = [
-                'https://placehold.co/900x500/A64CE2/FFFFFF?text=Hands-On+Learning',
-                'https://placehold.co/900x500/FF00A0/FFFFFF?text=Team+Collaboration',
-                'https://placehold.co/900x500/7B00CC/FFFFFF?text=AI-Powered+Projects',
-                'https://placehold.co/900x500/5B0099/FFFFFF?text=Creative+Solutions'
-            ];
-
             const updateCarousel = () => {
                 const totalImages = carouselImages.length;
                 currentIndex = (currentIndex + 1) % totalImages;
                 carouselSlide.style.transform = `translateX(${-currentIndex * 100}%)`;
             };
-
             setInterval(updateCarousel, 4000);
-
-            mobileMenuButton.addEventListener('click', () => {
-                mobileMenu.classList.toggle('hidden');
-            });
-            
-            const showContent = (targetTab, targetContents) => {
-                targetContents.forEach(content => {
-                    content.classList.remove('active');
-                });
-                document.getElementById(targetTab.dataset.tab).classList.add('active');
-            };
-
-            tabs.forEach(tab => {
-                tab.addEventListener('click', (e) => {
-                    tabs.forEach(t => t.classList.remove('active-tab'));
-                    e.currentTarget.classList.add('active-tab');
-                    showContent(e.currentTarget, tabContents);
-                });
-            });
         });
     </script>
 </body>
