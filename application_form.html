@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Application Form</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #F8EAF8; }
+        .nav-link { transition: color 0.3s ease; }
+        .nav-link:hover { color: #FF00A0; }
+        .form-bg { background: linear-gradient(135deg, #FF00A0 0%, #A64CE2 50%, #5B0099 100%); position: relative; overflow: hidden; }
+        .form-bg::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle at center, rgba(255,255,255,0.2) 0%, transparent 20%), radial-gradient(circle at top right, rgba(255,255,255,0.2) 0%, transparent 20%), radial-gradient(circle at bottom left, rgba(255,255,255,0.2) 0%, transparent 20%); animation: sparkle-glow 15s infinite linear; mix-blend-mode: overlay; }
+        @keyframes sparkle-glow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body class="text-[#3C2B42]">
+
+    <header class="bg-white/80 backdrop-blur-md sticky top-0 left-0 right-0 z-50 shadow-sm">
+        <div class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <h1 class="text-xl font-bold text-[#FF00A0]">The Pink School of STEM</h1>
+            <nav class="hidden md:flex space-x-8">
+                <a href="index.html" class="nav-link text-gray-600 font-medium">Home</a>
+                <a href="index.html#about" class="nav-link text-gray-600 font-medium">About</a>
+                <a href="mentors.html" class="nav-link text-gray-600 font-medium">AI Mentors</a>
+                <a href="index.html#curriculum" class="nav-link text-gray-600 font-medium">Curriculum</a>
+                <a href="student_hub.html" class="nav-link text-gray-600 font-medium">Student Hub</a>
+                <a href="index.html#network" class="nav-link text-gray-600 font-medium">Network</a>
+                <a href="application_form.html" class="nav-link text-gray-600 font-medium bg-[#FF00A0] text-white px-4 py-2 rounded-full hover:bg-[#A64CE2] hover:text-white transition-colors">Join Us</a>
+            </nav>
+            <button id="mobile-menu-button" class="md:hidden text-[#FF00A0]">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                </svg>
+            </button>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden px-6 pt-2 pb-4 space-y-2">
+            <a href="index.html" class="block nav-link text-gray-600">Home</a>
+            <a href="index.html#about" class="block nav-link text-gray-600">About</a>
+            <a href="mentors.html" class="block nav-link text-gray-600">AI Mentors</a>
+            <a href="index.html#curriculum" class="block nav-link text-gray-600">Curriculum</a>
+            <a href="student_hub.html" class="block nav-link text-gray-600">Student Hub</a>
+            <a href="index.html#network" class="block nav-link text-gray-600">Network</a>
+            <a href="application_form.html" class="block nav-link text-gray-600 bg-[#FF00A0] text-white px-4 py-2 rounded-full text-center">Join Us</a>
+        </div>
+    </header>
+
+    <main class="py-20 form-bg">
+        <div class="container mx-auto px-6">
+            <div class="max-w-2xl mx-auto bg-white p-8 md:p-12 rounded-lg shadow-lg">
+                <div class="text-center mb-8">
+                    <h3 class="text-3xl font-bold text-[#3C2B42]">Application Form</h3>
+                    <p class="mt-2 text-[#3C2B42]">Please fill out this form to apply for our program.</p>
+                </div>
+                <form id="application-form" action="#" method="POST" class="space-y-6">
+                    <div>
+                        <label for="student-name" class="block text-sm font-medium text-[#3C2B42]">Student's Full Name</label>
+                        <input type="text" id="student-name" name="student-name" required class="mt-1 block w-full p-3 rounded-md border-gray-300 shadow-sm focus:border-[#A64CE2] focus:ring focus:ring-[#A64CE2] focus:ring-opacity-50">
+                    </div>
+                    <div>
+                        <label for="student-email" class="block text-sm font-medium text-[#3C2B42]">Student's Email</label>
+                        <input type="email" id="student-email" name="student-email" required class="mt-1 block w-full p-3 rounded-md border-gray-300 shadow-sm focus:border-[#A64CE2] focus:ring focus:ring-[#A64CE2] focus:ring-opacity-50">
+                    </div>
+                    <div>
+                        <label for="parent-name" class="block text-sm font-medium text-[#3C2B42]">Parent/Guardian's Full Name</label>
+                        <input type="text" id="parent-name" name="parent-name" required class="mt-1 block w-full p-3 rounded-md border-gray-300 shadow-sm focus:border-[#A64CE2] focus:ring focus:ring-[#A64CE2] focus:ring-opacity-50">
+                    </div>
+                    <div>
+                        <label for="parent-email" class="block text-sm font-medium text-[#3C2B42]">Parent/Guardian's Email</label>
+                        <input type="email" id="parent-email" name="parent-email" required class="mt-1 block w-full p-3 rounded-md border-gray-300 shadow-sm focus:border-[#A64CE2] focus:ring focus:ring-[#A64CE2] focus:ring-opacity-50">
+                    </div>
+                    <div>
+                        <label for="school-name" class="block text-sm font-medium text-[#3C2B42]">Current School Name</label>
+                        <input type="text" id="school-name" name="school-name" required class="mt-1 block w-full p-3 rounded-md border-gray-300 shadow-sm focus:border-[#A64CE2] focus:ring focus:ring-[#A64CE2] focus:ring-opacity-50">
+                    </div>
+                    <div>
+                        <label for="essay" class="block text-sm font-medium text-[#3C2B42]">Tell us why you are interested in this program (250 words max)</label>
+                        <textarea id="essay" name="essay" rows="5" required class="mt-1 block w-full p-3 rounded-md border-gray-300 shadow-sm focus:border-[#A64CE2] focus:ring focus:ring-[#A64CE2] focus:ring-opacity-50"></textarea>
+                    </div>
+                    <div class="flex items-center justify-center">
+                        <button type="submit" class="w-full bg-[#FF00A0] text-white font-semibold px-6 py-3 rounded-full hover:bg-[#A64CE2] transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#FF00A0]">Submit Application</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-[#3C2B42] text-[#F8EAF8] py-12">
+        <div class="container mx-auto px-6">
+            <div class="grid md:grid-cols-3 gap-8 text-center md:text-left">
+                <div>
+                    <h5 class="text-xl font-bold text-[#FF00A0]">The Pink School of STEM</h5>
+                    <p class="mt-2 text-sm text-[#A64CE2]">Empowering the next generation of female innovators in science and technology.</p>
+                </div>
+                <div>
+                    <h5 class="text-xl font-bold text-[#FF00A0]">Connect With Us</h5>
+                    <ul class="mt-4 space-y-2">
+                        <li><a href="mailto:thepinkschoolofstem@gmail.com" class="text-sm hover:text-[#A64CE2] transition-colors flex items-center justify-center md:justify-start">
+                            <span class="text-xl mr-2">📧</span> thepinkschoolofstem@gmail.com</a></li>
+                        <li><a href="https://maps.google.com/?q=111+Pink+Hills+Avenue" target="_blank" class="text-sm hover:text-[#A64CE2] transition-colors flex items-center justify-center md:justify-start">
+                            <span class="text-xl mr-2">📍</span> 111 Pink Hills Avenue</a></li>
+                        <li class="flex justify-center md:justify-start space-x-4 mt-4 text-2xl">
+                            <a href="#" class="hover:text-[#A64CE2] transition-colors" aria-label="Facebook">📘</a>
+                            <a href="#" class="hover:text-[#A64CE2] transition-colors" aria-label="Instagram">📸</a>
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <h5 class="text-xl font-bold text-[#FF00A0]">Quick Links</h5>
+                    <ul class="mt-4 space-y-2">
+                        <li><a href="index.html#about" class="text-sm hover:text-[#A64CE2] transition-colors">About Us</a></li>
+                        <li><a href="mentors.html" class="text-sm hover:text-[#A64CE2] transition-colors">AI Mentors</a></li>
+                        <li><a href="index.html#curriculum" class="text-sm hover:text-[#A64CE2] transition-colors">Curriculum</a></li>
+                        <li><a href="student_hub.html" class="text-sm hover:text-[#A64CE2] transition-colors">Student Hub</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="mt-8 pt-4 border-t border-gray-700 text-center text-xs">
+            <p>&copy; 2025 The Pink School of STEM. All Rights Reserved.</p>
+        </div>
+    </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+        });
+    </script>
+</body>
+</html>
