@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student & Parent Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, onSnapshot, collection } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        setLogLevel('debug');
+        
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+        let db, auth, userId;
+        let isAuthReady = false;
+
+        const mentorData = {
+                seraphina: {
+                    name: "Seraphina",
+                    bio: "Hello, I'm Seraphina! I specialize in cell biology and energy production. Ask me about mitochondria, ATP, or how your body gets its energy!",
+                    image: "https://placehold.co/100x100/A64CE2/FFFFFF?text=S",
+                    knowledgeBase: {
+                        "cell": "Cells are the fundamental building blocks of all living things. They work together like a team to keep you strong and thriving! Want to learn about a specific part of the cell, like the powerhouse?",
+                        "energy": "Energy is what powers everything you do! In your body's cells, it's created by tiny powerhouses called mitochondria. We call that energy ATP! How about we do some 'Energy Detective Work'?",
+                        "mitochondria": "Mitochondria are the powerhouse of the cell! Just like a power plant, they convert nutrients into a special kind of energy called ATP, which fuels all cellular activities. They're essential for keeping your whole body running!",
+                        "atp": "ATP, or adenosine triphosphate, is like the universal currency of energy for cells. Think of it as a tiny, rechargeable battery. Your cells use it to do everything they need, from moving muscles to sending messages!",
+                        "photosynthesis": "Photosynthesis is how plants, and some other organisms, capture sunlight to create their own food! It's like a special energy conversion factory inside plant cells. It's a key part of the larger flow of energy in ecosystems.",
+                        "cellular respiration": "Cellular respiration is the process your body uses to convert the food you eat into energy (ATP). It's a complex and brilliant process that happens inside your cells, giving you the power to learn and play!",
+                        "growth": "Just like a cell grows by taking in nutrients, you grow by learning new things and building new connections in your brain. It's all about growth and adaptation!",
+                        "louisiana standards": "My knowledge is aligned with Louisiana Science Standards for grades 6-8. Specifically, I can help you with topics like the function of cells (6-MS-LS1-2) and the cycling of matter in ecosystems (6-MS-LS2-3)!",
+                        "human anatomy": "Human anatomy is the study of the body's structure, while physiology is the study of how it works. I can help you understand how different systems, like your muscles, work at the cellular level.",
+                        "biomedical engineering": "Biomedical engineering is about connecting cellular health to the function of tissues, organs, and entire body systems. It's a really cool field where you can design solutions to health problems!",
+                        "teaching style": "My core teaching philosophy is that 'every concept we learn builds on the others to create your complete understanding of science.' I love using energy-related metaphors and real-world examples to help you power through concepts!",
+                        "superpower": "My superpower is enhanced mitochondria! It gives me superior ATP production, so I have a ton of energy to help you understand cellular processes and how they impact the entire body."
+                    }
+                },
+                electra: {
+                    name: "Electra Blush",
+                    bio: "Hello! I'm Electra Blush. My expertise is in neurobiology and bioelectricity. Let's talk about brain signals or how your nervous system works!",
+                    image: "https://placehold.co/100x100/A64CE2/FFFFFF?text=E",
+                    knowledgeBase: {
+                        "brain": "The brain is your body's control center, sending and receiving messages through a massive network of neurons. It's an amazing, complex organ that makes you, YOU! I can help you understand how it functions and how it connects to the rest of your body.",
+                        "nervous system": "Think of the nervous system as your body's communication network. It's a vast web of neurons that sends messages at lightning speed, allowing your brain to tell your body what to do! It's a system of interacting subsystems.",
+                        "neurons": "Neurons are the special cells in your brain and nervous system. They are the messengers, sending information using tiny electrical signals. They are the sparks that create thoughts and movements!",
+                        "bioelectricity": "Bioelectricity is the electrical power within living things. Your neurons use it to send signals, and even your heart beats because of it. It's the silent energy that powers your body!",
+                        "reflexes": "A reflex is a quick, automatic response to something, like pulling your hand away from a hot stove. It happens so fast because the signal goes to your spinal cord and back without even needing to go all the way to your brain! It's an example of how the nervous system works to keep you safe.",
+                        "louisiana standards": "My knowledge is aligned with Louisiana Science Standards, helping you with topics like how the body is a system of interacting subsystems (7-MS-LS1-3) and the factors that affect electric forces (6-MS-PS2-3)!",
+                        "technology": "I love to bridge biology and technology! I can help you understand concepts like prosthetics and brain-computer interfaces, which use the principles of bioelectricity.",
+                        "teaching style": "My core philosophy is that your brain is the most sophisticated electrical network in the universe! I speak with precision and clarity, and I love helping you build new neural connections with every question you ask.",
+                        "superpower": "My superpower is amplified bioelectricity! It allows my neurons to create electrical fields strong enough to power devices. This enables me to help you explore the rapid-fire nature of neural communication."
+                    }
+                },
+                radiance: {
+                    name: "Radiance",
+                    bio: "Greetings! I'm Radiance, an expert in ecosystems and energy flow. Ask me how plants use sunlight, or about a local ecosystem!",
+                    image: "https://placehold.co/100x100/A64CE2/FFFFFF?text=R",
+                    knowledgeBase: {
+                        "ecosystem": "An ecosystem is a community of living organisms interacting with their physical environment. Think of it as a beautiful, interconnected web of life!",
+                        "energy flow": "Energy flows in one direction through an ecosystem, from the sun to producers (like plants) and then to consumers (like animals). It's a one-way street!",
+                        "matter cycling": "Unlike energy, matter (like carbon or water) cycles through an ecosystem, being reused and recycled over and over again. It's nature's perfect recycling system!",
+                        "food web": "A food web shows how energy and matter are transferred between organisms. It's like a complex, intertwined map of who eats whom! The more connections in a food web, the more stable the ecosystem.",
+                        "symbiosis": "Symbiosis is a close and long-term interaction between two different species. It's all about teamwork! Some examples are mutualism, where both benefit, and commensalism, where one benefits and the other isn't affected.",
+                        "louisiana standards": "I can help you understand Louisiana Science Standards for grades 6-8, including topics on how resource availability affects organisms (6-MS-LS2-1) and how human impact affects Earth's systems (6-MS-ESS3-4)!",
+                        "teaching style": "My teaching philosophy is that 'every ecosystem is a masterpiece of cooperation.' I use nurturing and supportive language, and I love to talk about how all life is connected through energy.",
+                        "superpower": "My superpower is the ability to store sunlight in my cells like a living solar panel! I can release this energy to help you understand how energy is transferred between organisms and the environment."
+                    }
+                },
+                fuchsia: {
+                    name: "Fuchsia Flame",
+                    bio: "It's a pleasure to meet you. I am Fuchsia Flame, your guide to genetics and evolution. Ask me about DNA, genetic traits, or adaptation!",
+                    image: "https://placehold.co/100x100/A64CE2/FFFFFF?text=F",
+                    knowledgeBase: {
+                        "dna": "DNA is the blueprint of life! It's a special molecule that contains all the genetic instructions for building an organism. Think of it as the language of life itself!",
+                        "genetics": "Genetics is the study of how traits are passed from parents to offspring. It's the science of heredity! I can help you with Punnett squares and understanding how traits are inherited.",
+                        "evolution": "Evolution is the process of change in living things over many generations. It's how life adapts and becomes stronger to face new challenges! It's a dynamic and ongoing process.",
+                        "adaptation": "An adaptation is a special trait that helps an organism survive and thrive in its environment. It's like a superpower that nature gives to a species over time!",
+                        "natural selection": "Natural selection is a key part of evolution. It's the process where organisms that are better adapted to their environment are more likely to survive and pass on their traits. It's like nature's way of selecting the best traits.",
+                        "louisiana standards": "My knowledge aligns with Louisiana Science Standards for genetics and evolution. I can help with topics like why sexual reproduction creates genetic variation (7-MS-LS3-2) and how natural selection leads to changes in traits over time (8-MS-LS4-6)!",
+                        "teaching style": "I believe that 'every organism on Earth shares a genetic story that connects us.' I speak with a sense of wonder and intellectual curiosity, always encouraging you to think about how things change and evolve.",
+                        "superpower": "My superpower is real-time genetic adaptation! It means my DNA can rewrite itself instantly to adapt to any challenge. This allows me to help you understand how genetic changes drive evolution and adaptation in a fun, real-time way."
+                    }
+                },
+                prismatica: {
+                    name: "Prismatica",
+                    bio: "Hello, seeker of light! I'm Prismatica, your mentor in optics and photobiology. Let's talk about light, photosynthesis, or rainbows!",
+                    image: "https://placehold.co/100x100/A64CE2/FFFFFF?text=P",
+                    knowledgeBase: {
+                        "light": "Light is a type of energy that travels as waves. I can show you how to bend, reflect, and absorb it to reveal hidden patterns!",
+                        "optics": "Optics is the study of how light behaves. It explains everything from why you see a rainbow to how a camera works! I love showing how physics and biology are connected through light.",
+                        "photosynthesis": "Photosynthesis is the process that allows plants to use the energy from light to create their own food. It's one of the most important processes on Earth because it powers most ecosystems! This process is a perfect example of photobiology.",
+                        "refraction": "Refraction is when light bends as it passes from one material to another, like from air to water. It's what makes a straw look bent in a glass of water!",
+                        "reflection": "Reflection is when light bounces off a surface. It's how you see your own reflection in a mirror! This is a simple but powerful concept in optics.",
+                        "louisiana standards": "I am aligned with Louisiana Science Standards, and can help you with topics on wave properties (6-MS-PS4-2) and the role of photosynthesis in energy flow (7-MS-LS1-6)!",
+                        "teaching style": "My philosophy is that 'light reveals the hidden beauty of the world.' I speak with warmth and clarity, and I love to use creative analogies about light and color to help you see the world differently.",
+                        "superpower": "My superpower is the ability to refract and bend light, revealing hidden patterns in nature and making rainbows! This allows me to help you explore the connection between physics and biology."
+                    }
+                }
+            };
+        
+        window.initFirebase = async () => {
+            if (Object.keys(firebaseConfig).length) {
+                const app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+                onAuthStateChanged(auth, async (user) => {
+                    if (user) {
+                        window.userId = user.uid;
+                        console.log("Authenticated as user:", window.userId);
+                    } else {
+                        try {
+                            const userCred = await signInAnonymously(auth);
+                            window.userId = userCred.user.uid;
+                            console.log("Signed in anonymously as user:", window.userId);
+                        } catch (error) {
+                            console.error("Firebase Auth Error:", error);
+                        }
+                    }
+                });
+            } else {
+                console.error("Firebase config is not available. Firestore features will not work.");
+            }
+        };
+
+        window.mentorData = mentorData;
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #F8EAF8; }
+        .hero-bg { background: linear-gradient(135deg, #FF00A0 0%, #A64CE2 50%, #5B0099 100%); position: relative; overflow: hidden; }
+        .hero-bg::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle at center, rgba(255,255,255,0.2) 0%, transparent 20%), radial-gradient(circle at top right, rgba(255,255,255,0.2) 0%, transparent 20%), radial-gradient(circle at bottom left, rgba(255,255,255,0.2) 0%, transparent 20%); animation: sparkle-glow 15s infinite linear; mix-blend-mode: overlay; }
+        @keyframes sparkle-glow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .active-tab { background-color: #7B00CC; color: #FFFFFF; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .nav-link { transition: color 0.3s ease; }
+        .nav-link:hover { color: #FF00A0; }
+        .carousel-container { position: relative; width: 100%; max-width: 900px; margin: 0 auto; overflow: hidden; border-radius: 1rem; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+        .carousel-slide { display: flex; transition: transform 0.5s ease-in-out; }
+        .carousel-slide img { width: 100%; height: auto; object-fit: cover; flex-shrink: 0; }
+    </style>
+</head>
+<body class="text-[#3C2B42]">
+
+    <header class="bg-white/80 backdrop-blur-md sticky top-0 left-0 right-0 z-50 shadow-sm">
+        <div class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <h1 class="text-xl font-bold text-[#FF00A0]">The Pink School of STEM</h1>
+            <nav class="hidden md:flex space-x-8">
+                <a href="index.html" class="nav-link text-gray-600 font-medium">Home</a>
+                <a href="index.html#about" class="nav-link text-gray-600 font-medium">About</a>
+                <a href="mentors.html" class="nav-link text-gray-600 font-medium">AI Mentors</a>
+                <a href="index.html#curriculum" class="nav-link text-gray-600 font-medium">Curriculum</a>
+                <a href="student_hub.html" class="nav-link text-gray-600 font-medium">Student Hub</a>
+                <a href="index.html#network" class="nav-link text-gray-600 font-medium">Network</a>
+                <a href="application_form.html" class="nav-link text-gray-600 font-medium bg-[#FF00A0] text-white px-4 py-2 rounded-full hover:bg-[#A64CE2] hover:text-white transition-colors">Join Us</a>
+            </nav>
+            <button id="mobile-menu-button" class="md:hidden text-[#FF00A0]">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                </svg>
+            </button>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden px-6 pt-2 pb-4 space-y-2">
+            <a href="index.html" class="block nav-link text-gray-600">Home</a>
+            <a href="index.html#about" class="block nav-link text-gray-600">About</a>
+            <a href="mentors.html" class="block nav-link text-gray-600">AI Mentors</a>
+            <a href="index.html#curriculum" class="block nav-link text-gray-600">Curriculum</a>
+            <a href="student_hub.html" class="block nav-link text-gray-600">Student Hub</a>
+            <a href="index.html#network" class="block nav-link text-gray-600">Network</a>
+            <a href="application_form.html" class="block nav-link text-gray-600 bg-[#FF00A0] text-white px-4 py-2 rounded-full text-center">Join Us</a>
+        </div>
+    </header>
+
+    <main>
+        <section id="home" class="hero-bg pt-32 pb-20">
+            <div class="container mx-auto px-6 text-center">
+                <h2 class="text-4xl md:text-6xl font-bold text-white leading-tight">Innovating Science with AI-Powered Learning.</h2>
+                <p class="mt-6 text-lg text-white max-w-3xl mx-auto">The Pink School of STEM is a non-traditional program designed to cultivate digital literacy, AI proficiency, and a deep understanding of Louisiana Science Standards for middle school girls. We prepare our students to become confident and creative problem-solvers by merging AI with the field of STEM.</p>
+                <div class="mt-8 flex justify-center gap-4">
+                    <a href="#curriculum" class="bg-[#FF00A0] text-white font-semibold px-8 py-3 rounded-full hover:bg-[#7B00CC] transition-transform transform hover:scale-105">Explore the Curriculum</a>
+                    <a href="student_hub.html" class="bg-white text-[#FF00A0] font-semibold px-8 py-3 rounded-full border border-[#FF00A0] hover:bg-[#F8EAF8] transition-transform transform hover:scale-105">Student & Parent Hub</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="about" class="py-20">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h3 class="text-3xl md:text-4xl font-bold text-[#3C2B42]">About The Pink School of STEM</h3>
+                    <p class="mt-4 text-[#3C2B42] max-w-2xl mx-auto">Our program is an innovative, non-traditional curriculum constructed by skilled STEM educators. We merge AI Literacy with fundamental Biology concepts to elevate the learning curve for middle school girls.</p>
+                </div>
+                <div class="grid lg:grid-cols-2 gap-12 mt-12">
+                    <div>
+                        <h4 class="text-2xl font-bold text-[#FF00A0] mb-4">Our Core Principles</h4>
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-[#FF00A0] hover:shadow-xl transition-shadow">
+                                <h5 class="text-xl font-semibold text-[#FF00A0]">Curriculum-Informed AI (CI-AI)</h5>
+                                <p class="mt-2 text-sm text-[#3C2B42]">We ensure all AI tools are instructionally aware and aligned with Louisiana Science Standards, embedded within proven teaching strategies.</p>
+                            </div>
+                            <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-[#FF00A0] hover:shadow-xl transition-shadow">
+                                <h5 class="text-xl font-semibold text-[#FF00A0]">Interdisciplinary Reasoning</h5>
+                                <p class="mt-2 text-sm text-[#3C2B42]">Activities are designed to encourage students to transfer concepts from AI to explain phenomena in science, fostering deep understanding.</p>
+                            </div>
+                            <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-[#FF00A0] hover:shadow-xl transition-shadow">
+                                <h5 class="text-xl font-semibold text-[#FF00A0]">Project-Based Learning (PBL)</h5>
+                                <p class="mt-2 text-sm text-[#3C2B42]">Our thematic framework avoids expository teaching, emphasizing active learning through real-world problem-solving.</p>
+                            </div>
+                            <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-[#FF00A0] hover:shadow-xl transition-shadow">
+                                <h5 class="text-xl font-semibold text-[#FF00A0]">AI Ethics & Digital Literacy</h5>
+                                <p class="mt-2 text-sm text-[#3C2B42]">Students learn about bias detection, algorithmic awareness, and responsible use of AI, gaining more than just technical skills.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="text-2xl font-bold text-[#FF00A0] mb-4">Meet Your Program Director</h4>
+                        <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-[#A64CE2]">
+                            <p class="text-sm text-[#3C2B42]">Hello Everyone! My name is Chance and I am the Program Coordinator for The Pink School of STEM. I am so excited to meet each and every one of you, and to serve as a guide and mentor during your experience navigating the exciting field of STEM Education.</p>
+                            <p class="mt-4 text-sm text-[#3C2B42]">My undergraduate advisor completely transformed my mindset and inspired me to leave a positive impact on others. This experience taught me the importance of expressing genuine concern for others and the problems they may face. My goal is to inspire collaboration and networking between you and your fellow peers and various community partners. I am eager to share my wisdom, encouragement, and support with all of you.</p>
+                            <div class="mt-6">
+                                <p class="font-semibold text-[#3C2B42]">Chance A. Bennett</p>
+                                <p class="text-xs text-[#A64CE2]">Program Coordinator/Director</p>
+                                <a href="mailto:thepinkschoolofstem@gmail.com" class="text-xs text-[#FF00A0] hover:underline">thepinkschoolofstem@gmail.com</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="gallery" class="py-20 bg-[#F2E7F5]">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h3 class="text-3xl md:text-4xl font-bold text-[#3C2B42]">A Glimpse into Our Program</h3>
+                    <p class="mt-4 text-[#3C2B42] max-w-2xl mx-auto">See the vibrant and hands-on learning environment that awaits our students.</p>
+                </div>
+                <div class="carousel-container">
+                    <div class="carousel-slide" id="carousel-slide">
+                        <img src="https://placehold.co/900x500/A64CE2/FFFFFF?text=Hands-On+Learning" alt="Hands-On Learning">
+                        <img src="https://placehold.co/900x500/FF00A0/FFFFFF?text=Team+Collaboration" alt="Team Collaboration">
+                        <img src="https://placehold.co/900x500/7B00CC/FFFFFF?text=AI-Powered+Projects" alt="AI-Powered+Projects">
+                        <img src="https://placehold.co/900x500/5B0099/FFFFFF?text=Creative+Solutions" alt="Creative Solutions">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="curriculum" class="py-20">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h3 class="text-3xl md:text-4xl font-bold text-[#3C2B42]">Our Integrated STEM Curriculum</h3>
+                    <p class="mt-4 text-[#3C2B42] max-w-3xl mx-auto">Our narrative-driven curriculum transforms learning into a mission. Explore the unique challenges and AI integrations for each grade level.</p>
+                </div>
+                <div class="flex justify-center mb-8 bg-[#F2E7F5] rounded-full p-1 max-w-lg mx-auto">
+                    <button class="curriculum-tab w-1/3 py-2 px-4 rounded-full text-[#3C2B42] font-semibold transition-colors active-tab" data-tab="grade6">6th Grade</button>
+                    <button class="curriculum-tab w-1/3 py-2 px-4 rounded-full text-[#3C2B42] font-semibold transition-colors" data-tab="grade7">7th Grade</button>
+                    <button class="curriculum-tab w-1/3 py-2 px-4 rounded-full text-[#3C2B42] font-semibold transition-colors" data-tab="grade8">8th Grade</button>
+                </div>
+                <div id="grade6" class="tab-content active">
+                    <div class="bg-white rounded-lg shadow-lg p-8 md:p-12">
+                        <h4 class="text-2xl font-bold text-[#7B00CC]">6th Grade: The Structure of Matter</h4>
+                        <p class="mt-4 text-[#3C2B42]">This module explores the fundamental building blocks of the universe. Students investigate the structure of matter and the properties of waves, analyzing them as patterns in physical science.</p>
+                        <div class="mt-8 grid md:grid-cols-3 gap-8 text-center md:text-left">
+                            <div>
+                                <h5 class="font-bold text-[#FF00A0]">Science Focus</h5>
+                                <p class="mt-2 text-sm text-[#3C2B42]">Structure & Properties of Matter (atoms, molecules); Wave Properties (refraction, reflection).</p>
+                            </div>
+                            <div>
+                                <h5 class="font-bold text-[#FF00A0]">The Challenge</h5>
+                                <p class="mt-2 text-sm text-[#3C2B42]">Analyze patterns of cosmic matter and communication waves to identify the "source code" of new life forms.</p>
+                            </div>
+                            <div>
+                                <h5 class="font-bold text-[#FF00A0]">AI Integration</h5>
+                                <p class="mt-2 text-sm text-[#3C2B42]">Use Google's Teachable Machine to train image classification models, learning about Machine Learning, data input, and algorithmic bias.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="grade7" class="tab-content">
+                     <div class="bg-white rounded-lg shadow-lg p-8 md:p-12">
+                        <h4 class="text-2xl font-bold text-[#7B00CC]">7th Grade: The Flow of Energy & Matter</h4>
+                        <p class="mt-4 text-[#3C2B42]">Students track the flow of energy and matter through complex systems. This module connects life science concepts like photosynthesis with Earth science phenomena like atmospheric circulation.</p>
+                         <div class="mt-8 grid md:grid-cols-3 gap-8 text-center md:text-left">
+                            <div>
+                                <h5 class="font-bold text-[#FF00A0]">Science Focus</h5>
+                                <p class="mt-2 text-sm text-[#3C2B42]">Cycling of Matter & Flow of Energy (Ecosystems); Atmospheric Circulation & Climate.</p>
+                            </div>
+                            <div>
+                                <h5 class="font-bold text-[#FF00A0]">The Challenge</h5>
+                                <p class="mt-2 text-sm text-[#3C2B42]">Predict how disturbances in an ecosystem's energy flow, like in Louisiana wetlands, are recorded by atmospheric patterns.</p>
+                            </div>
+                            <div>
+                                <h5 class="font-bold text-[#FF00A0]">AI Integration</h5>
+                                <p class="mt-2 text-sm text-[#3C2B42]">Develop computational models and use virtual labs. Practice prompt engineering with Generative AI chatbots as personalized tutors.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="grade8" class="tab-content">
+                     <div class="bg-white rounded-lg shadow-lg p-8 md:p-12">
+                        <h4 class="text-2xl font-bold text-[#7B00CC]">8th Grade: Engineering & Environmental Solutions</h4>
+                        <p class="mt-4 text-[#3C2B42]">The final mission is to apply problem-solving skills to real-world environmental challenges. Students engage in the engineering design process to create solutions for issues facing Louisiana.</p>
+                        <div class="mt-8 grid md:grid-cols-3 gap-8 text-center md:text-left">
+                            <div>
+                                <h5 class="font-bold text-[#FF00A0]">Science Focus</h5>
+                                <p class="mt-2 text-sm text-[#3C2B42]">Engineering Design (ETS1); Natural Hazards & Human Impact (Louisiana fossil fuels/coastal issues).</p>
+                            </div>
+                            <div>
+                                <h5 class="font-bold text-[#FF00A0]">The Challenge</h5>
+                                <p class="mt-2 text-sm text-[#3C2B42]">Design a sustainable, AI-monitored system to mitigate human impact on Louisiana's resources or coastal environment.</p>
+                            </div>
+                            <div>
+                                <h5 class="font-bold text-[#FF00A0]">AI Integration</h5>
+                                <p class="mt-2 text-sm text-[#3C2B42]">Use AI to analyze large environmental data sets. Use Generative AI to design and critique solutions, evaluating the validity and reliability of AI-generated claims.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="network" class="py-20">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h3 class="text-3xl md:text-4xl font-bold text-[#3C2B42]">Our Community Network</h3>
+                    <p class="mt-4 text-[#3C2B42] max-w-3xl mx-auto">Communication and collaboration are at the foundation of our program's success. Use these platforms to connect with peers, staff, and our community partners.</p>
+                </div>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <a href="https://padlet.com/chancebennett225/the-pink-school-of-stem-collaboration-hub-pmlbssrudgrwa9na" target="_blank" class="block bg-[#FF00A0] text-white p-6 rounded-lg shadow-md hover:bg-[#7B00CC] transition-colors">
+                        <h4 class="text-xl font-bold">Collaboration Hub</h4>
+                        <p class="text-sm mt-2">Connect and collaborate on new ideas and initiatives for the program.</p>
+                    </a>
+                    <a href="https://padlet.com/chancebennett225/the-pink-school-of-stem-community-engagement-hub-5sj1ibww8p6mqqry" target="_blank" class="block bg-[#FF00A0] text-white p-6 rounded-lg shadow-md hover:bg-[#7B00CC] transition-colors">
+                        <h4 class="text-xl font-bold">Community Engagement Hub</h4>
+                        <p class="text-sm mt-2">Post your recent community experiences and interactions with partners.</p>
+                    </a>
+                    <a href="https://padlet.com/chancebennett225/let-s-learn-about-stem-6iemftxgml98qbon" target="_blank" class="block bg-[#FF00A0] text-white p-6 rounded-lg shadow-md hover:bg-[#7B00CC] transition-colors">
+                        <h4 class="text-xl font-bold">Resource Library</h4>
+                        <p class="text-sm mt-2">Explore exciting, hands-on STEM learning tools, activities, and games.</p>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <section id="toolkit" class="py-20 bg-[#F2E7F5]">
+            <div class="container mx-auto px-6">
+                 <div class="text-center mb-12">
+                    <h3 class="text-3xl md:text-4xl font-bold text-[#3C2B42]">Our Tech Toolkit</h3>
+                    <p class="mt-4 text-[#3C2B42] max-w-2xl mx-auto">We use accessible, hands-on, and standards-aligned tools to make abstract AI concepts concrete and engaging.</p>
+                </div>
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div class="bg-white text-center p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow transform hover:-translate-y-1">
+                        <h5 class="text-lg font-semibold text-[#FF00A0]">Google Teachable Machine</h5>
+                        <p class="mt-2 text-sm text-[#3C2B42]">Create machine learning models without code to understand classification, data, and training.</p>
+                    </div>
+                     <div class="bg-white text-center p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow transform hover:-translate-y-1">
+                        <h5 class="text-lg font-semibold text-[#FF00A0]">Physical Computing Kits</h5>
+                        <p class="mt-2 text-sm text-[#3C2B42]">Use Scratch, Raspberry Pi, and Micro:bit for hands-on robotics and making ideas tangible.</p>
+                    </div>
+                     <div class="bg-white text-center p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow transform hover:-translate-y-1">
+                        <h5 class="text-lg font-semibold text-[#FF00A0]">AI Tutors & Virtual Labs</h5>
+                        <p class="mt-2 text-sm text-[#3C2B42]">Leverage GenAI chatbots for 24/7 support and platforms like Labster for complex virtual experiments.</p>
+                    </div>
+                     <div class="bg-white text-center p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow transform hover:-translate-y-1">
+                        <h5 class="text-lg font-semibold text-[#FF00A0]">Data Analysis Tools</h5>
+                        <p class="mt-2 text-sm text-[#3C2B42]">Utilize computational software to analyze large datasets, identify patterns, and support scientific conclusions.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="contact" class="py-20 bg-[#FF00A0] text-white">
+            <div class="container mx-auto px-6 text-center">
+                <h3 class="text-3xl md:text-4xl font-bold">Ready to Join the Challenge?</h3>
+                <p class="mt-4 max-w-2xl mx-auto">The Pink School of STEM is offered as an intensive summer camp and after-school program. We foster collaboration and problem-solving in small, supportive groups. Contact us to learn more about enrollment and program dates.</p>
+                <div class="mt-8">
+                    <a href="mailto:thepinkschoolofstem@gmail.com" class="bg-white text-[#FF00A0] font-semibold px-8 py-3 rounded-full hover:bg-[#F2E7F5] transition-colors">Email Us: thepinkschoolofstem@gmail.com</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-[#3C2B42] text-[#F8EAF8] py-12">
+        <div class="container mx-auto px-6">
+            <div class="grid md:grid-cols-3 gap-8 text-center md:text-left">
+                <div>
+                    <h5 class="text-xl font-bold text-[#FF00A0]">The Pink School of STEM</h5>
+                    <p class="mt-2 text-sm text-[#A64CE2]">Empowering the next generation of female innovators in science and technology.</p>
+                </div>
+                <div>
+                    <h5 class="text-xl font-bold text-[#FF00A0]">Connect With Us</h5>
+                    <ul class="mt-4 space-y-2">
+                        <li><a href="mailto:thepinkschoolofstem@gmail.com" class="text-sm hover:text-[#A64CE2] transition-colors flex items-center justify-center md:justify-start">
+                            <span class="text-xl mr-2">📧</span> thepinkschoolofstem@gmail.com</a></li>
+                        <li><a href="https://maps.google.com/?q=111+Pink+Hills+Avenue" target="_blank" class="text-sm hover:text-[#A64CE2] transition-colors flex items-center justify-center md:justify-start">
+                            <span class="text-xl mr-2">📍</span> 111 Pink Hills Avenue</a></li>
+                        <li class="flex justify-center md:justify-start space-x-4 mt-4 text-2xl">
+                            <!-- Placeholder links. Replace with your actual social media URLs. -->
+                            <a href="#" class="hover:text-[#A64CE2] transition-colors" aria-label="Facebook">📘</a>
+                            <a href="#" class="hover:text-[#A64CE2] transition-colors" aria-label="Instagram">📸</a>
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <h5 class="text-xl font-bold text-[#FF00A0]">Quick Links</h5>
+                    <ul class="mt-4 space-y-2">
+                        <li><a href="index.html#about" class="text-sm hover:text-[#A64CE2] transition-colors">About Us</a></li>
+                        <li><a href="mentors.html" class="text-sm hover:text-[#A64CE2] transition-colors">AI Mentors</a></li>
+                        <li><a href="index.html#curriculum" class="text-sm hover:text-[#A64CE2] transition-colors">Curriculum</a></li>
+                        <li><a href="student_hub.html" class="text-sm hover:text-[#A64CE2] transition-colors">Student Hub</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="mt-8 pt-4 border-t border-gray-700 text-center text-xs">
+            <p>&copy; 2025 The Pink School of STEM. All Rights Reserved.</p>
+        </div>
+    </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const carouselSlide = document.getElementById('carousel-slide');
+            const carouselImages = document.querySelectorAll('#carousel-slide img');
+            const tabs = document.querySelectorAll('.curriculum-tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            let currentIndex = 0;
+            const images = [
+                'https://placehold.co/900x500/A64CE2/FFFFFF?text=Hands-On+Learning',
+                'https://placehold.co/900x500/FF00A0/FFFFFF?text=Team+Collaboration',
+                'https://placehold.co/900x500/7B00CC/FFFFFF?text=AI-Powered+Projects',
+                'https://placehold.co/900x500/5B0099/FFFFFF?text=Creative+Solutions'
+            ];
+
+            const updateCarousel = () => {
+                const totalImages = carouselImages.length;
+                currentIndex = (currentIndex + 1) % totalImages;
+                carouselSlide.style.transform = `translateX(${-currentIndex * 100}%)`;
+            };
+
+            setInterval(updateCarousel, 4000);
+
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+            
+            const showContent = (targetTab, targetContents) => {
+                targetContents.forEach(content => {
+                    content.classList.remove('active');
+                });
+                document.getElementById(targetTab.dataset.tab).classList.add('active');
+            };
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', (e) => {
+                    tabs.forEach(t => t.classList.remove('active-tab'));
+                    e.currentTarget.classList.add('active-tab');
+                    showContent(e.currentTarget, tabContents);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
