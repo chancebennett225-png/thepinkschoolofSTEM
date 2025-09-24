@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Pink School of STEM Infographic</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8EAF8;
+        }
+    </style>
+</head>
+<body class="bg-[#fce7f3] text-[#831843] font-sans">
+    
+    <div class="relative min-h-screen">
+        <!-- Header -->
+        <header class="bg-[#d53f8c] text-white p-6 shadow-lg text-center">
+            <h1 class="text-4xl md:text-5xl font-extrabold font-sans">The Pink School of STEM</h1>
+            <p class="mt-2 text-xl md:text-2xl font-light">A Comprehensive Plan for Equitable Access</p>
+        </header>
+
+        <main class="container mx-auto p-4 md:p-8">
+
+            <!-- Introduction -->
+            <section class="bg-white rounded-lg shadow-xl p-6 md:p-8 mb-8">
+                <h2 class="text-2xl md:text-3xl font-bold mb-4 text-[#db2777]">Our Vision: Building a Future of Innovators</h2>
+                <p class="text-lg leading-relaxed">The Pink School of STEM is on a mission to empower young girls from all backgrounds. This infographic outlines our data-driven approach to providing a world-class STEM education, ensuring every student has the tools and skills to thrive. We believe in connecting learning to real-world impact through a unique curriculum, equitable access to technology, and a focus on creative problem-solving.</p>
+            </section>
+
+            <!-- Section: The Challenge & Our Goals -->
+            <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                <!-- Goal 1: Inspire Curiosity -->
+                <div class="bg-white rounded-lg shadow-xl p-6 text-center flex flex-col items-center justify-center">
+                    <span class="text-6xl text-[#9c1f62] mb-4">💡</span>
+                    <h3 class="text-xl font-bold mb-2">Inspire Curiosity</h3>
+                    <p class="text-sm text-gray-600">Spark a lifelong interest in STEM with engaging, hands-on activities.</p>
+                </div>
+                <!-- Goal 2: Foster Collaboration -->
+                <div class="bg-white rounded-lg shadow-xl p-6 text-center flex flex-col items-center justify-center">
+                    <span class="text-6xl text-[#9c1f62] mb-4">🤝</span>
+                    <h3 class="text-xl font-bold mb-2">Foster Collaboration</h3>
+                    <p class="text-sm text-gray-600">Build strong communities where diversity is the foundation of innovation.</p>
+                </div>
+                <!-- Goal 3: Ensure Equitable Access -->
+                <div class="bg-white rounded-lg shadow-xl p-6 text-center flex flex-col items-center justify-center">
+                    <span class="text-6xl text-[#9c1f62] mb-4">🔗</span>
+                    <h3 class="text-xl font-bold mb-2">Equitable Access</h3>
+                    <p class="text-sm text-gray-600">Provide every student with the digital tools they need to succeed.</p>
+                </div>
+                <!-- Goal 4: Connect to Life -->
+                <div class="bg-white rounded-lg shadow-xl p-6 text-center flex flex-col items-center justify-center">
+                    <span class="text-6xl text-[#9c1f62] mb-4">🌍</span>
+                    <h3 class="text-xl font-bold mb-2">Connect to Life</h3>
+                    <p class="text-sm text-gray-600">Link all learning activities to real-world applications and state standards.</p>
+                </div>
+                <!-- Goal 5: Problem Solving -->
+                <div class="bg-white rounded-lg shadow-xl p-6 text-center flex flex-col items-center justify-center">
+                    <span class="text-6xl text-[#9c1f62] mb-4">🧠</span>
+                    <h3 class="text-xl font-bold mb-2">Problem Solving</h3>
+                    <p class="text-sm text-gray-600">Use technology as a tool for creative and critical thinking.</p>
+                </div>
+            </section>
+
+            <!-- Section: Financial Needs Overview -->
+            <section class="bg-white rounded-lg shadow-xl p-6 md:p-8 mb-8">
+                <h2 class="text-2xl md:text-3xl font-bold mb-6 text-[#db2777]">Financial Needs at a Glance</h2>
+                <p class="text-lg leading-relaxed mb-6">Our program's success is directly tied to a robust financial plan. The following charts break down our key budget areas, showing where resources are needed to achieve our mission of equitable access for every student.</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                    <!-- Chart: Funding Allocation Donut Chart -->
+                    <div class="flex flex-col items-center justify-center">
+                        <h3 class="text-xl font-bold mb-4 text-center">Funding Allocation by Category</h3>
+                        <div class="chart-container w-full max-w-lg mx-auto h-72 md:h-80 lg:h-96">
+                            <canvas id="fundingChart"></canvas>
+                        </div>
+                        <p class="text-sm mt-4 text-gray-600 text-center">The largest portion of our budget is dedicated to providing students with high-quality devices to ensure a true one-to-one learning environment.</p>
+                    </div>
+                    
+                    <!-- Chart: Hardware Comparison Bar Chart -->
+                    <div class="flex flex-col items-center justify-center">
+                        <h3 class="text-xl font-bold mb-4 text-center">Hardware Investment Comparison</h3>
+                        <div class="chart-container w-full max-w-lg mx-auto h-72 md:h-80 lg:h-96">
+                            <canvas id="hardwareCostChart"></canvas>
+                        </div>
+                        <p class="text-sm mt-4 text-gray-600 text-center">We have a range of hardware options to meet our needs, with Chromebooks offering a cost-effective solution for a large student body.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section: The Student Journey -->
+            <section class="bg-white rounded-lg shadow-xl p-6 md:p-8 mb-8">
+                <h2 class="text-2xl md:text-3xl font-bold mb-6 text-[#db2777]">The Student Journey: A Narrative Flow</h2>
+                <p class="text-lg leading-relaxed mb-8">Our curriculum is built as a three-act story, guiding students through key STEM concepts using AI tools as their partners in discovery. This process reinforces core learning objectives while fostering a new form of digital literacy.</p>
+
+                <!-- Flow Chart Diagram -->
+                <div class="relative flex flex-col items-center space-y-8">
+                    <!-- Act 1 -->
+                    <div class="w-full text-center">
+                        <div class="bg-[#d53f8c] text-white py-4 px-6 rounded-lg shadow-md mb-2">
+                            <span class="text-4xl font-black block mb-2">Act 1</span>
+                            <h3 class="font-bold text-lg">The Cosmic Wave Pattern</h3>
+                            <p class="text-sm font-light">**Tool:** Google Teachable Machine</p>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-2">Students train an AI to classify wave patterns, learning about data bias and wave properties.</p>
+                    </div>
+                    <span class="text-4xl text-[#db2777]">↓</span>
+
+                    <!-- Act 2 -->
+                    <div class="w-full text-center">
+                        <div class="bg-[#d53f8c] text-white py-4 px-6 rounded-lg shadow-md mb-2">
+                            <span class="text-4xl font-black block mb-2">Act 2</span>
+                            <h3 class="font-bold text-lg">The Ecosystem Flow Crisis</h3>
+                            <p class="text-sm font-light">**Tool:** GenAI Chatbot & Virtual Labs</p>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-2">Students use AI to model ecosystem changes, exploring energy transfer and genetic adaptation.</p>
+                    </div>
+                    <span class="text-4xl text-[#db2777]">↓</span>
+
+                    <!-- Act 3 -->
+                    <div class="w-full text-center">
+                        <div class="bg-[#d53f8c] text-white py-4 px-6 rounded-lg shadow-md mb-2">
+                            <span class="text-4xl font-black block mb-2">Act 3</span>
+                            <h3 class="font-bold text-lg">Thermal Defense Engineering</h3>
+                            <p class="text-sm font-light">**Tool:** Generative AI for Design</p>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-2">Students use AI to design solutions for thermal energy transfer, learning to critique AI outputs.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section: Impact & Success Metrics -->
+            <section class="bg-white rounded-lg shadow-xl p-6 md:p-8 mb-8 text-center">
+                <h2 class="text-2xl md:text-3xl font-bold mb-6 text-[#db2777]">Measuring Our Impact</h2>
+                <p class="text-lg leading-relaxed mb-8">We believe in data-driven results. Our program's success is measured by clear indicators across key areas, from student learning to community engagement. We track and report on these metrics to ensure we are meeting our goals.</p>
+
+                <div class="flex flex-col md:flex-row justify-around items-center space-y-8 md:space-y-0 md:space-x-8">
+                    <div class="flex flex-col items-center">
+                        <div class="bg-[#d53f8c] rounded-full p-6 w-32 h-32 flex items-center justify-center mb-4">
+                            <span class="text-4xl md:text-5xl font-black text-white">100%</span>
+                        </div>
+                        <h4 class="font-bold text-xl">Student Engagement</h4>
+                        <p class="text-sm text-gray-600 max-w-xs">Students will demonstrate active participation in collaborative projects.</p>
+                    </div>
+
+                    <div class="flex flex-col items-center">
+                        <div class="bg-[#d53f8c] rounded-full p-6 w-32 h-32 flex items-center justify-center mb-4">
+                            <span class="text-4xl md:text-5xl font-black text-white">2+</span>
+                        </div>
+                        <h4 class="font-bold text-xl">New Partnerships</h4>
+                        <p class="text-sm text-gray-600 max-w-xs">The program will secure at least two new corporate partnerships per year.</p>
+                    </div>
+
+                    <div class="flex flex-col items-center">
+                        <div class="bg-[#d53f8c] rounded-full p-6 w-32 h-32 flex items-center justify-center mb-4">
+                            <span class="text-4xl md:text-5xl font-black text-white">100%</span>
+                        </div>
+                        <h4 class="font-bold text-xl">Equitable Access</h4>
+                        <p class="text-sm text-gray-600 max-w-xs">All students will have the resources they need to succeed in the program.</p>
+                    </div>
+                </div>
+            </section>
+
+            <div class="text-center mt-12 mb-8">
+                <p class="text-2xl font-bold mb-4 text-[#db2777]">Get Involved Today</p>
+                <a href="index.html" class="bg-[#d53f8c] hover:bg-[#c0397a] text-white font-bold py-3 px-8 rounded-lg shadow-xl transition-transform transform hover:scale-105 inline-block">Back to Homepage</a>
+            </div>
+
+        </main>
+
+        <!-- Footer -->
+        <footer class="bg-[#d53f8c] text-white p-6 text-center shadow-lg mt-12">
+            <p>&copy; 2023 The Pink School of STEM. All rights reserved.</p>
+        </footer>
+    </div>
+</body>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+        const fundingCtx = document.getElementById('fundingChart').getContext('2d');
+        const hardwareCtx = document.getElementById('hardwareCostChart').getContext('2d');
+        
+        const fundingChart = new Chart(fundingCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Hardware', 'Professional Development', 'Software/Apps', 'Network & Support', 'Operational/Misc.'],
+                datasets: [{
+                    data: [59000, 6000, 1500, 5500, 1500],
+                    backgroundColor: ['#d53f8c', '#805ad5', '#f687b3', '#ecc94b', '#48bb78'],
+                    hoverBackgroundColor: ['#c0397a', '#6b459d', '#e56aa0', '#d8b42f', '#3c9d64'],
+                    borderWidth: 2,
+                    borderColor: '#fce7f3'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            color: '#4a5568'
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            title: function(tooltipItems) {
+                                const item = tooltipItems[0];
+                                let label = item.chart.data.labels[item.dataIndex];
+                                if (Array.isArray(label)) {
+                                    return label.join(' ');
+                                } else {
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        const hardwareData = {
+            labels: ['Chromebooks', 'Windows Laptops', 'iPads'],
+            datasets: [{
+                label: 'Cost per Unit ($)',
+                data: [350, 650, 450],
+                backgroundColor: ['#d53f8c', '#805ad5', '#f687b3'],
+                borderColor: '#c0397a',
+                borderWidth: 1
+            }]
+        };
+
+        const hardwareChart = new Chart(hardwareCtx, {
+            type: 'bar',
+            data: hardwareData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Cost ($)'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            title: function(tooltipItems) {
+                                const item = tooltipItems[0];
+                                let label = item.chart.data.labels[item.dataIndex];
+                                if (Array.isArray(label)) {
+                                    return label.join(' ');
+                                } else {
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    });
+</script>
+</html>
